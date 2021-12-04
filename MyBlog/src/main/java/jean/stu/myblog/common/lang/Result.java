@@ -14,14 +14,14 @@ import java.io.Serializable;
 public class Result implements Serializable {
 
     private int code;
-    private Object date;
+    private Object data;
     private String msg;
 
-    public static Result success(Object date) {
+    public static Result success(Object data) {
         Result result = new Result();
         result.setCode(200);
         result.setMsg("操作成功！");
-        result.setDate(date);
+        result.setData(data);
         return result;
     }
 
@@ -29,7 +29,7 @@ public class Result implements Serializable {
         Result result = new Result();
         result.setCode(code);
         result.setMsg(msg);
-        result.setDate(date);
+        result.setData(date);
         return result;
     }
 
@@ -45,7 +45,7 @@ public class Result implements Serializable {
         Result result = new Result();
         result.setCode(code);
         result.setMsg(msg);
-        result.setDate(date);
+        result.setData(date);
         return result;
     }
 }
