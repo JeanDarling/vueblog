@@ -6,8 +6,9 @@ import ElementUI from 'element-ui';
 import ViewUI from 'view-design';
 import axios from 'axios'
 import { mavonEditor } from "mavon-editor";
-
 import  "./util/http"
+import  "./util/required"
+
 
 import 'element-ui/lib/theme-chalk/index.css';
 import 'view-design/dist/styles/iview.css';

@@ -12,9 +12,8 @@
                             <router-link :to="{name: 'BlogDetail', params: {blogId: blog.id}}">
                                 {{blog.title}}
                             </router-link>
-
                         </h4>
-                        <p>{{blog.description}}</p>
+                        <p>{{blog.desription}}</p>
                     </el-card>
                 </el-timeline-item>
 

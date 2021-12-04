@@ -48,7 +48,7 @@
                 this.$refs[formName].validate((valid) => {
                     if (valid) {
                         const _this = this
-                        alert('submit!');
+                        // alert('submit!');
                         this.$axios.post("/login", this.form).then(res=>{
                             const token =res.headers['authorization']
                             const userInfo = res.data.data

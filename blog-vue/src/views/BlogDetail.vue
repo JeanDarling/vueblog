@@ -1,83 +1,71 @@
 <template>
     <div>
         <Header/>
-        <div class="m-content">
-            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm">
-                <el-form-item label="标题" prop="title">
-                    <el-input v-model="ruleForm.title"></el-input>
-                </el-form-item>
-                <el-form-item label="摘要" prop="description">
-                    <el-input type="textarea" v-model="ruleForm.description"></el-input>
-                </el-form-item>
-                <el-form-item label="内容" prop="content">
-                    <mavon-editor v-model="ruleForm.content"></mavon-editor>
-                </el-form-item>
-                <el-form-item>
-                    <el-button type="primary" @click="submitForm('ruleForm')">立即创建</el-button>
-                    <el-button @click="resetForm('ruleForm')">重置</el-button>
-                </el-form-item>
-            </el-form>
+        <div class="mblog">
+            <h2>{{blog.title}}</h2>
+            <el-link icon="el-icon-edit"  v-if="ownBlog">
+                <router-link :to="{name: 'BlogAdd', params : {blogId: blog.id}}">
+                    编辑
+                </router-link>
+                </el-link>
+            <el-divider></el-divider>
+            <div class="content markdown-body" v-html="blog.content"></div>
         </div>
     </div>
 </template>
 
 <script>
     import Header from '../components/Header'
+    import "github-markdown-css/github-markdown-light.css"
 
     export default {
         name: "BlogDetail",
         components: {Header},
         data() {
             return {
-                ruleForm: {
-                    title: '',
-                    description: '',
-                    content:''
+                blog: {
+                    id: "",
+                    title: "",
+                    content:"",
                 },
-                rules: {
-                    title: [
-                        { required: true, message: '请输入标题', trigger: 'blur' },
-                        { min: 3, max: 25, message: '长度在 3 到 25 个字符', trigger: 'blur' }
-                    ],
-                    description: [
-                        { required: true, message: '请输入摘要', trigger: 'blur' }
-                    ],
-                    content: [
-                        { required: true, message: '请输入内容', trigger: 'blur' }
-                    ],
+                ownBlog: false,
 
-                }
-            };
-        },
-        methods: {
-            submitForm(formName) {
-                this.$refs[formName].validate((valid) => {
-                    if (valid) {
-                        //alert('submit!');
-                        this.$axios.post("/blog/edit", {
-                            headers:{
-                                "Authorization": localStorage.getItem("token")
-                            }
-                        }).then(res=> {
-                            console.log("res->", res)
-                        })
-
-                    } else {
-                        console.log('error submit!!');
-                        return false;
-                    }
-                });
-            },
-            resetForm(formName) {
-                this.$refs[formName].resetFields();
             }
+        },
+        created() {
+            const blogId = this.$route.params.blogId
+            console.log("blog->id", blogId)
+            if(blogId) {
+                this.$axios.get("/blog/" + blogId).then(res=>{
+                    const blog = res.data.data
+                    console.log("blog->", blog)
+                    this.blog.id = blog.id
+                    // 对content进行渲染
+                    var MarkdownIt = require("markdown-it")
+                    var md = new MarkdownIt()
+                    var result = md.render(blog.content)
+                    this.blog.content = result
+
+
+                    this.blog.title = blog.title
+
+                    // 是否展示编辑
+                    this.ownBlog = (blog.userId === this.$store.getters.getUser.id)
+
+                })
+            }
+
         }
+
     }
 </script>
 
 <style scoped>
 
-    .m-content{
-        text-align: center;
+    .mblog{
+        box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04);
+        width: 100%;
+        height: 700px;
+        padding: 20px 15px;
     }
 </style>
